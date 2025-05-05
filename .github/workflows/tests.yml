@@ -62,17 +62,9 @@ jobs:
     - name: Install WordPress test suite
       run: bash bin/install-wp-tests.sh wordpress_test root rootpassword 127.0.0.1 latest true
 
-    - name: Run unit tests
-      run: composer test:unit
-
-    - name: Run integration tests
-      run: composer test:integration
-
-    - name: Upload code coverage
-      uses: codecov/codecov-action@v3
-      with:
-        directory: ./tests/coverage
-        fail_ci_if_error: true
+    - name: Run all tests with coverage
+      run: |
+        XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text
 
   lint:
     runs-on: ubuntu-latest
