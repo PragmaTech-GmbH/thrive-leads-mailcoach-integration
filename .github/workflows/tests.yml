@@ -60,7 +60,7 @@ jobs:
         echo "MySQL is up and running"
         
     - name: Install WordPress test suite
-      run: bash bin/install-wp-tests.sh wordpress_test root rootpassword 127.0.0.1 latest
+      run: bash bin/install-wp-tests.sh wordpress_test root rootpassword 127.0.0.1 latest true
 
     - name: Run unit tests
       run: composer test:unit
