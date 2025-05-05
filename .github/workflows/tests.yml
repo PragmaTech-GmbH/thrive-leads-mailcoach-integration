@@ -1,0 +1,97 @@
+name: Plugin Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: [7.4, 8.0, 8.1]
+        wordpress: [5.9, '6.0', latest]
+        include:
+          - php: 7.4
+            wordpress: latest
+            coverage: true
+        exclude:
+          - php: 8.1
+            wordpress: 5.9
+
+    name: WordPress ${{ matrix.wordpress }} on PHP ${{ matrix.php }}
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: wordpress_test
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: mbstring, intl, pdo_mysql
+        coverage: ${{ matrix.coverage && 'xdebug' || 'none' }}
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Get Composer Cache Directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Install WordPress test suite
+      run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 ${{ matrix.wordpress }}
+
+    - name: Run unit tests
+      run: composer test:unit
+
+    - name: Run integration tests
+      run: composer test:integration
+
+    - name: Upload code coverage
+      if: ${{ matrix.coverage }}
+      uses: codecov/codecov-action@v3
+      with:
+        directory: ./tests/coverage
+        fail_ci_if_error: true
+
+  lint:
+    runs-on: ubuntu-latest
+    name: PHP Lint
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+        extensions: mbstring, intl
+        tools: cs2pr
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Lint code
+      run: composer lint

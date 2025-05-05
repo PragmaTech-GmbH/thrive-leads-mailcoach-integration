@@ -1,0 +1,44 @@
+# Dependencies
+/vendor/
+/node_modules/
+composer.lock
+
+# WordPress Test Suite
+/wp-tests-config.php
+/wordpress/
+/wordpress-tests-lib/
+
+# Build Files
+/build/
+/dist/
+
+# Coverage Reports
+/tests/coverage/
+/coverage/
+clover.xml
+
+# Environment Files
+.env
+.env.*
+
+# Editor Directories and Files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Docker
+/docker-data/
+
+# Cache
+.phpunit.result.cache
+**/.claude/settings.local.json
