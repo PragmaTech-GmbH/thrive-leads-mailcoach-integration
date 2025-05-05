@@ -54,8 +54,15 @@ class Thrive_Dash_List_Connection_Mailcoach extends Thrive_Dash_List_Connection_
      * @return bool|string true for success or error message for failure
      */
     public function read_credentials($submitted_data) {
-        $api_key = isset($submitted_data['connection']['api_key']) ? sanitize_text_field($submitted_data['connection']['api_key']) : '';
-        $api_url = isset($submitted_data['connection']['api_url']) ? sanitize_text_field($submitted_data['connection']['api_url']) : '';
+        // Extract API key from submitted data
+        $api_key = isset($submitted_data['connection']['api_key']) 
+            ? sanitize_text_field($submitted_data['connection']['api_key']) 
+            : '';
+        
+        // Extract API URL from submitted data
+        $api_url = isset($submitted_data['connection']['api_url']) 
+            ? sanitize_text_field($submitted_data['connection']['api_url']) 
+            : '';
 
         if (empty($api_key)) {
             return __('API Key is required', 'thrive-dash');

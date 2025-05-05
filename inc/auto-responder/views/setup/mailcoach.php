@@ -36,12 +36,22 @@
 	<div class="tvd-col tvd-s12">
 		<p class="tve-mailcoach-help">
 			<?php 
-			echo esc_html__( 'To get your API Key, go to your Mailcoach account, navigate to "API tokens" in the settings', 'thrive-dash' ); 
+			// First part of the API token instructions
+			echo esc_html__( 'To get your API Key, go to your Mailcoach account,', 'thrive-dash' ); 
+			?> 
+			<?php
+			// Second part of the API token instructions
+			echo esc_html__( 'navigate to "API tokens" in the settings', 'thrive-dash' ); 
 			?>
 			<br>
 			<?php 
-			echo esc_html__( 'and create a new token with at least "view email lists" and "manage subscribers" permissions.', 'thrive-dash' ); 
+			// Third part of the API token instructions
+			echo esc_html__( 'and create a new token with required permissions:', 'thrive-dash' ); 
 			?>
+			<br>
+			- <?php echo esc_html__( 'view email lists', 'thrive-dash' ); ?>
+			<br>
+			- <?php echo esc_html__( 'manage subscribers', 'thrive-dash' ); ?>
 		</p>
 	</div>
 </div>
