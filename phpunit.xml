@@ -17,11 +17,11 @@
 			<directory prefix="test-" suffix=".php">./tests/integration/</directory>
 		</testsuite>
 	</testsuites>
-	<coverage>
-		<include>
+	<filter>
+		<whitelist>
 			<directory suffix=".php">./inc</directory>
-		</include>
-	</coverage>
+		</whitelist>
+	</filter>
 	<php>
 		<ini name="display_errors" value="On" />
 		<ini name="error_reporting" value="-1" />
