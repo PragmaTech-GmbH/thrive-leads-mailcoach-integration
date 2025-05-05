@@ -15,7 +15,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: rootpassword
           MYSQL_DATABASE: wordpress_test
         ports:
           - 3306:3306
@@ -30,6 +30,9 @@ jobs:
         php-version: '8.3'
         extensions: mbstring, intl, pdo_mysql
         coverage: xdebug
+
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y subversion
 
     - name: Validate composer.json
       run: composer validate --strict
@@ -48,8 +51,16 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Check MySQL connection
+      run: |
+        echo "Wait for MySQL to be ready"
+        while ! mysqladmin ping -h 127.0.0.1 --silent -u root -prootpassword; do
+          sleep 1
+        done
+        echo "MySQL is up and running"
+        
     - name: Install WordPress test suite
-      run: bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest
+      run: bash bin/install-wp-tests.sh wordpress_test root rootpassword 127.0.0.1 latest
 
     - name: Run unit tests
       run: composer test:unit
